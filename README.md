@@ -1,7 +1,15 @@
-# ODB
-One Day Before - A unknown project introduced by GorouFlex
-
+```
+   ____    _____    ____  
+  / __ \  |  __ \  |  _ \ 
+ | |  | | | |  | | | |_) |
+ | |  | | | |  | | |  _ < 
+ | |__| | | |__| | | |_) |
+  \____/  |_____/  |____/
+                
+```
+[TODO](todo.md)
 
 
 ETA: 2 months
+
 Signed (21/09/2023)
