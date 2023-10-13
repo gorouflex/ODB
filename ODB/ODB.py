@@ -1,14 +1,10 @@
+# TODO
+# AMIL
+# CFU
+# GenSMBios
 import sys
-
-print("  ____    _____    ____")
-print(" / __ \  |  __ \  |  _ \ ")
-print("| |  | | | |  | | | |_) |")
-print("| |  | | | |  | | |  _ < ")
-print("| |__| | | |__| | | |_) |")
-print(" \____/  |_____/  |____/ ")
-print("")
-print("Version 0.1.3 Alpha")
-print(" ")
+import os
+import secrets
 
 smbios_to_secureboot = {
     "Disabled": "Unknown",
@@ -56,21 +52,87 @@ secureboot_to_macos = {
     "x86legacy": "11.0.1 (20B29)",
 }
 
-def main():
-    user_input = input("Enter the SMBIOS or SecureBootModel: ")
-
-    if user_input in smbios_to_secureboot:
-        secure_boot_model = smbios_to_secureboot[user_input]
-        min_macos_version = secureboot_to_macos[user_input]
-        print(f"SecureBootModel: {secure_boot_model}")
-        print(f"Minimum macOS Version: {min_macos_version}")
-    elif user_input in secureboot_to_smbios:
-        smbios_values = secureboot_to_smbios[user_input]
-        min_macos_version = secureboot_to_macos[smbios_values]
-        print(f"SMBIOS values for {user_input}: {smbios_values}")
-        print(f"Minimum macOS Version: {min_macos_version}")
+def clear_screen():
+    if os.name == 'nt':
+        _ = os.system('cls')
     else:
-        print(f"'{user_input}' doesn't have the T2 Chip")
+        _ = os.system('clear')
+
+def print_menu():
+    print("1. Lookup")
+    print("2. Generate")
+    print("")
+    print("Q. Quit")
+
+def print_logo():
+    print("  ____    _____    ____")
+    print(" / __ \  |  __ \  |  _ \ ")
+    print("| |  | | | |  | | | |_) |")
+    print("| |  | | | |  | | |  _ < ")
+    print("| |__| | | |__| | | |_) |")
+    print(" \____/  |_____/  |____/ ")
+    print("")
+    print("Version 0.1.4 Alpha - CLI Mode")
+    print(" ")
+
+def print_generate_submenu():
+    print("1. Generate SMBios")
+    print("2. Generate ApECID")
+    print("")
+    print("B. Back to main menu")
+    
+def main():
+    while True:
+        clear_screen()
+        print_logo()
+        print_menu()
+
+        user_choice = input("Option: ")
+
+        if user_choice == '1':
+            clear_screen()
+            print_logo()
+            user_input = input("Enter the SMBIOS or SecureBootModel: ")
+            if user_input in smbios_to_secureboot:
+                secure_boot_model = smbios_to_secureboot[user_input]
+                min_macos_version = secureboot_to_macos[user_input]
+                print(f"SMBios: {secure_boot_model}")
+                print(f"Minimum macOS Version: {min_macos_version}")
+            elif user_input in secureboot_to_smbios:
+                smbios_values = secureboot_to_smbios[user_input]
+                min_macos_version = secureboot_to_macos[smbios_values]
+                print(f"SecureBootModel for {user_input}: {smbios_values}")
+                print(f"Minimum macOS Version: {min_macos_version}")
+            else:
+                print(f"'{user_input}' doesn't have the T2 Chip")
+            input("Press Enter to continue...")
+
+        elif user_choice == '2':
+            while True:
+                clear_screen()
+                print_logo()
+                print_generate_submenu()
+                generate_choice = input("Option: ")
+                
+                if generate_choice == '1':
+                    clear_screen()
+                    print_logo()
+                    print("Generate SMBios")
+                    print("This feature is still in beta stages")
+                    input("Press Enter to continue...")
+
+                elif generate_choice == '2':
+                    clear_screen()
+                    print_logo()
+                    print("Generated ApECID: ")
+                    print(secrets.randbits(64))
+                    input("Press Enter to continue...")
+
+                elif generate_choice == 'B':
+                    break
+
+        elif user_choice == 'Q':
+            sys.exit(0)
 
 if __name__ == "__main__":
     main()
