@@ -152,7 +152,7 @@ class Smbios:
         self.scripts = "Scripts"
         self.plist = None
         self.plist_data = None
-        self.plist_type = "Unknown" # Can be "Clover" or "OpenCore" depending
+        self.plist_type = "Unknown"
         self.remote = self._get_remote_version()
         self.okay_keys = [
             "SerialNumber",
@@ -167,7 +167,6 @@ class Smbios:
         self.gen_rom = True        
 
     def _get_macserial_version(self):
-        # Attempts to determine the macserial version from the latest OpenCorPkg
         try:
             urlsource = json.loads(self.d.get_string(self.opencorpgk_url,False))
             macserial_h_url = "https://raw.githubusercontent.com/acidanthera/OpenCorePkg/{}/Utilities/macserial/macserial.h".format(urlsource[0]["target_commitish"])
@@ -177,7 +176,6 @@ class Smbios:
         return macserial_v
 
     def _get_macserial_url(self):
-        # Gets a url to the latest version of OpenCorePkg
         try:
             urlsource = json.loads(self.d.get_string(self.opencorpgk_url,False))
             return next((x.get("browser_download_url",None) for x in urlsource[0].get("assets",[]) if "RELEASE.zip" in x.get("name","")),None)
@@ -196,12 +194,11 @@ class Smbios:
                 path = os.path.join(os.getcwd(), name)
             elif os.path.exists(os.path.join(os.getcwd(), self.scripts, name)):
                 path = os.path.join(os.getcwd(),self.scripts,name)
-            if path: break # Found it, bail
+            if path: break
         os.chdir(cwd)
         return path
 
     def _get_version(self,macserial):
-        # Gets the macserial version
         out, error, code = self.r.run({"args":[macserial]})
         if not len(out):
             return None
@@ -221,16 +218,13 @@ class Smbios:
         self.d.stream_to_file(url, os.path.join(ztemp,zfile), False)
         print(" - Extracting...")
         btemp = tempfile.mkdtemp(dir=temp)
-        # Extract with built-in tools \o/
         with zipfile.ZipFile(os.path.join(ztemp,zfile)) as z:
             z.extractall(os.path.join(temp,btemp))
         script_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)),self.scripts)
         search_path = os.path.join(temp,btemp)
-        # Extend the search path if path_in_zip contains elements
         if path_in_zip: search_path = os.path.join(search_path,*path_in_zip)
         for x in os.listdir(search_path):
             if "macserial" in x.lower():
-                # Found one
                 print(" - Found {}".format(x))
                 if os.name != "nt":
                     print("   - Chmod +x...")
@@ -241,7 +235,6 @@ class Smbios:
                 shutil.copy(os.path.join(search_path,x), os.path.join(script_dir,x))
 
     def _get_macserial(self):
-        # Download both the windows and mac versions of macserial and expand them to the Scripts dir
         self.u.head("Getting MacSerial")
         print("")
         print("Gathering latest macserial info...")
@@ -314,10 +307,8 @@ class Smbios:
             print("")
             self.u.grab("Press [enter] to return...")
             return self._get_plist()
-        # Got a valid plist - let's try to check for Clover or OC structure
         detected_type = "OpenCore" if "PlatformInfo" in self.plist_data else "Clover" if "SMBIOS" in self.plist_data else "Unknown"
         if detected_type.lower() == "unknown":
-            # Have the user decide which to do
             while True:
                 self.u.head("Unknown Plist Type")
                 print("")
@@ -333,11 +324,8 @@ class Smbios:
                 elif t in ("1","2"):
                     detected_type = "Clover" if t == "1" else "OpenCore"
                     break
-        # Got a plist and type - let's save it
         self.plist_type = detected_type
-        # Apply any key-stripping or safety checks
         if self.plist_type.lower() == "clover":
-            # Got a valid clover plist - let's check keys
             key_check = self.plist_data.get("SMBIOS",{})
             new_smbios = {}
             removed_keys = []
@@ -345,9 +333,7 @@ class Smbios:
                 if key not in self.okay_keys:
                     removed_keys.append(key)
                 else:
-                    # Build our new SMBIOS
                     new_smbios[key] = key_check[key]
-            # We want the SmUUID to be the top-level - remove CustomUUID if exists
             if "CustomUUID" in self.plist_data.get("SystemParameters",{}):
                 removed_keys.append("CustomUUID")
             if len(removed_keys):
@@ -357,9 +343,7 @@ class Smbios:
                     print("The following keys will be removed:\n\n{}\n".format(", ".join(removed_keys)))
                     con = self.u.grab("Continue? (y/n):  ")
                     if con.lower() == "y":
-                        # Flush settings
                         self.plist_data["SMBIOS"] = new_smbios
-                        # Remove the CustomUUID if present
                         self.plist_data.get("SystemParameters",{}).pop("CustomUUID", None)
                         break
                     elif con.lower() == "n":
@@ -373,15 +357,12 @@ class Smbios:
         return rom_str
 
     def _get_smbios(self, macserial, smbios_type, times=1):
-        # Returns a list of SMBIOS lines that match
         total = []
         while len(total) < times:
             total_len = len(total)
             smbios, err, code = self.r.run({"args":[macserial,"-a"]})
             if code != 0:
-                # Issues generating
                 return None
-            # Got our text, let's see if the SMBIOS exists
             for line in smbios.split("\n"):
                 line = line.strip()
                 if line.lower().startswith(smbios_type.lower()):
@@ -389,28 +370,19 @@ class Smbios:
                     if len(total) >= times:
                         break
             if total_len == len(total):
-                # Total didn't change - return False
                 return False
-        # Have a list now - let's format it
         output = []
         for sm in total:
             s_list = [x.strip() for x in sm.split("|")]
-            # Add a uuid
-            s_list.append(str(uuid.uuid4()).upper())
-            # Generate a ROM value
             s_list.append(self._get_rom())
-            # Format the text
             output.append(s_list)
         return output
 
     def _generate_smbios(self, macserial):
         if not macserial or not os.path.exists(macserial):
-            # Attempt to download
             self._get_macserial()
-            # Check it again
             macserial = self._get_binary()
             if not macserial or not os.path.exists(macserial):
-                # Could not find it, and it failed to download :(
                 self.u.head("Missing MacSerial")
                 print("")
                 print("MacSerial binary was not found and failed to download.")
@@ -430,7 +402,6 @@ class Smbios:
             return
         menu = menu.split(" ")
         if len(menu) == 1:
-            # Default of one time
             smtype = menu[0]
             times  = 1
         else:
@@ -445,14 +416,12 @@ class Smbios:
                 self.u.grab("Press [enter] to return...")
                 self._generate_smbios(macserial)
                 return
-        # Keep it between 1 and 20
         if times < 1:
             times = 1
         if times > 20:
             times = 20
         smbios = self._get_smbios(macserial,smtype,times)
         if smbios == None:
-            # Issues generating
             print("Error - macserial returned an error!")
             self.u.grab("Press [enter] to return...")
             return
@@ -466,13 +435,12 @@ class Smbios:
         if self.gen_rom: f_string += "\nApple ROM:    {}" if self.rom_prefixes else "\nRandom ROM:   {}"
         print("\n\n".join([f_string.format(*x) for x in smbios]))
         if self.plist_data and self.plist and os.path.exists(self.plist):
-            # Let's apply - got a valid file, and plist data
+
             if len(smbios) > 1:
                 print("\nFlushing first SMBIOS entry to {}".format(self.plist))
             else:
                 print("\nFlushing SMBIOS entry to {}".format(self.plist))
             if self.plist_type.lower() == "clover":
-                # Ensure plist data exists
                 for x in ["SMBIOS","RtVariables","SystemParameters"]:
                     if not x in self.plist_data:
                         self.plist_data[x] = {}
@@ -485,10 +453,8 @@ class Smbios:
                     self.plist_data["RtVariables"]["ROM"] = plist.wrap_data(binascii.unhexlify(smbios[0][4].encode("utf-8")))
                 self.plist_data["SystemParameters"]["InjectSystemID"] = True
             elif self.plist_type.lower() == "opencore":
-                # Ensure data exists
                 if not "PlatformInfo" in self.plist_data: self.plist_data["PlatformInfo"] = {}
                 if not "Generic" in self.plist_data["PlatformInfo"]: self.plist_data["PlatformInfo"]["Generic"] = {}
-                # Set the values
                 self.plist_data["PlatformInfo"]["Generic"]["SystemProductName"] = smbios[0][0]
                 self.plist_data["PlatformInfo"]["Generic"]["SystemSerialNumber"] = smbios[0][1]
                 self.plist_data["PlatformInfo"]["Generic"]["MLB"] = smbios[0][2]
@@ -497,7 +463,6 @@ class Smbios:
                     self.plist_data["PlatformInfo"]["Generic"]["ROM"] = plist.wrap_data(binascii.unhexlify(smbios[0][4].encode("utf-8")))
             with open(self.plist, "wb") as f:
                 plist.dump(self.plist_data, f, sort_keys=False)
-            # Got only valid keys now
         print("")
         self.u.grab("Press [enter] to return...")
 
@@ -518,72 +483,60 @@ class Smbios:
         self.u.grab("Press [enter] to return...")
 
     def main(self):
-        self.u.head()
-        print("")
-        macserial = self._get_binary()
-        if macserial:
-            macserial_v = self._get_version(macserial)
-            print("MacSerial v{}".format(macserial_v))
-        else:
-            macserial_v = "0.0.0"
-            print("MacSerial not found!")
-        # Print remote version if possible
-        if self.remote and self.u.compare_versions(macserial_v, self.remote):
-            print("Remote Version v{}".format(self.remote))
-        print("Current plist: {}".format(self.plist))
-        print("Plist type:    {}".format(self.plist_type))
-        print("")
-        print("1. Install/Update MacSerial")
-        print("2. Select config.plist")
-        print("3. Generate SMBIOS")
-        print("4. Generate UUID")
-        print("5. Generate ROM")
-        print("6. List Current SMBIOS")
-        print("7. Generate ROM With SMBIOS (Currently {})".format("Enabled" if self.gen_rom else "Disabled"))
-        print("")
-        print("Q. Quit")
-        print("")
-        menu = self.u.grab("Please select an option:  ").lower()
-        if not len(menu):
-            return
-        if menu == "q":
-           self.odb.main()  # Return to the main menu of ODB
-           return
-        elif menu == "1":
-            self._get_macserial()
-        elif menu == "2":
-            self._get_plist()
-        elif menu == "3":
-            self._generate_smbios(macserial)
-        elif menu == "4":
-            self.u.head("Generated UUID")
+        while True:
+            self.u.head()
             print("")
-            print(str(uuid.uuid4()).upper())
+            macserial = self._get_binary()
+            if macserial:
+                macserial_v = self._get_version(macserial)
+                print("MacSerial v{}".format(macserial_v))
+            else:
+                macserial_v = "0.0.0"
+                print("MacSerial not found!")
+            if self.remote and self.u.compare_versions(macserial_v, self.remote):
+                print("Remote Version v{}".format(self.remote))
+            print("Current plist: {}".format(self.plist))
+            print("Plist type:    {}".format(self.plist_type))
             print("")
-            self.u.grab("Press [enter] to return...")
-        elif menu == "5":
-            self.u.head("Generated ROM")
+            print("1. Install/Update MacSerial")
+            print("2. Select config.plist")
+            print("3. Generate SMBIOS")
+            print("4. Generate UUID")
+            print("5. Generate ROM")
+            print("6. List Current SMBIOS")
+            print("7. Generate ROM With SMBIOS (Currently {})".format("Enabled" if self.gen_rom else "Disabled"))
             print("")
-            print("{} ROM: {}".format("Apple" if self.rom_prefixes else "Random", self._get_rom()))
+            print("Q. Quit")
             print("")
-            self.u.grab("Press [enter] to return...")
-        elif menu == "6":
-            self._list_current(macserial)
-        elif menu == "7":
-            self.gen_rom = not self.gen_rom
+            menu = self.u.grab("Please select an option:  ").lower()
+            if not len(menu):
+                continue
+            if menu == "q":
+                return  
+            elif menu == "1":
+                self._get_macserial()
+            elif menu == "2":
+                self._get_plist()
+            elif menu == "3":
+                self._generate_smbios(macserial)
+            elif menu == "4":
+                self.u.head("Generated UUID")
+                print("")
+                print(str(uuid.uuid4()).upper())
+                print("")
+                self.u.grab("Press [enter] to return...")
+            elif menu == "5":
+                self.u.head("Generated ROM")
+                print("")
+                print("{} ROM: {}".format("Apple" if self.rom_prefixes else "Random", self._get_rom()))
+                print("")
+                self.u.grab("Press [enter] to return...")
+            elif menu == "6":
+                self._list_current(macserial)
+            elif menu == "7":
+                self.gen_rom = not self.gen_rom
 
 
 if __name__ == "__main__":
     odb = ODB()
     odb.main()
-
-s = Smbios()
-while True:
-    try:
-        s.main()
-    except Exception as e:
-        print(e)
-        if sys.version_info >= (3, 0):
-            input("Press [enter] to return...")
-        else:
-            raw_input("Press [enter] to return...")
