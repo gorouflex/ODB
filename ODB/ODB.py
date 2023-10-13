@@ -90,13 +90,8 @@ class ODB:
         print("")
         print("B. Back to the main menu")
         
-    def _generate_smbios(self):
-        macserial_path = self._get_binary()
-        s._generate_smbios(macserial_path)
-
     def main(self):
-        s = Smbios()
-        macserial_path = s._get_binary()
+        s = Smbios(self)
         while True:
             self.clear_screen()
             self.print_logo()
@@ -131,12 +126,8 @@ class ODB:
 
                     if generate_choice == '1':
                         self.clear_screen()
-                        self.print_logo()
-                    if generate_choice == '1':
-                        macserial_path = s._get_binary()  # Call _get_binary from the Smbios class
-                        s._generate_smbios(macserial_path)
-                        input("Press Enter to continue...")
-
+                        self.print_logo()                        
+                        s.main()
                     elif generate_choice == '2':
                         self.clear_screen()
                         self.print_logo()
@@ -151,7 +142,8 @@ class ODB:
                 sys.exit(0)
 
 class Smbios:
-    def __init__(self):
+    def __init__(self, odb_instance):
+        self.odb = odb_instance
         os.chdir(os.path.dirname(os.path.realpath(__file__)))
         self.u = utils.Utils("GenSMBIOS")
         self.d = downloader.Downloader()
@@ -411,8 +403,8 @@ class Smbios:
             output.append(s_list)
         return output
 
-    def _generate_smbios(self, macserial_path):
-        if not macserial_path or not os.path.exists(macserial_path):
+    def _generate_smbios(self, macserial):
+        if not macserial or not os.path.exists(macserial):
             # Attempt to download
             self._get_macserial()
             # Check it again
@@ -555,7 +547,8 @@ class Smbios:
         if not len(menu):
             return
         if menu == "q":
-            self.u.custom_quit()
+           self.odb.main()  # Return to the main menu of ODB
+           return
         elif menu == "1":
             self._get_macserial()
         elif menu == "2":
@@ -583,18 +576,11 @@ class Smbios:
 if __name__ == "__main__":
     odb = ODB()
     odb.main()
-    s = Smbios()
-    s.main()
 
-
-smbios_generator = Smbios()
-
-# Instantiate the ODB class
-odb = ODB()
-
+s = Smbios()
 while True:
     try:
-        odb.main()
+        s.main()
     except Exception as e:
         print(e)
         if sys.version_info >= (3, 0):
