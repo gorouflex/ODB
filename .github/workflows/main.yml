@@ -57,15 +57,13 @@ jobs:
         git push
       working-directory: ${{ github.workspace }}
 
-    - name: Update or Create Release
+    - name: Create release
       run: |
         release_tag="${{ steps.increment_version.outputs.new_tag }}"
-        release_title="0.1.6 Alpha"
-
         if gh release view "$release_tag" &>/dev/null; then
-          gh release upload "$release_tag" ./ODB.zip --notes-file description.txt --clobber
+           gh release upload "$release_tag" ./ODB.zip --clobber
         else
-          gh release create "$release_tag" ./ODB.zip --title "$release_title" --notes-file description.txt --prerelease
+           gh release create "$release_tag" ./ODB.zip --title "$release_title" --prerelease
         fi
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
