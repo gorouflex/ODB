@@ -41,15 +41,13 @@ jobs:
         release_title="0.1.6 Pre-Alpha"
 
         commit_history=$(git log -5 --graph --oneline --decorate)
-        
+
         if gh release view "$release_tag" &>/dev/null; then
-          gh release edit "$release_tag" --title "$release_title" --notes "### Pre-Alpha version are not recommend to use, only for testing!
-          ### The latest commits are:  
-          $commit_history"
-        else
-          gh release create "$release_tag" ./ODB.zip --title "$release_title" --prerelease --notes "### Pre-Alpha version are not recommend to use, only for testing!
-          ### The latest commits are:  
-          $commit_history"
+          gh release delete "$release_tag" --yes
         fi
+
+        gh release create "$release_tag" ./ODB.zip --title "$release_title" --prerelease --notes "### Pre-Alpha version is not recommended for use, only for testing!
+        ### The latest commits are:  
+        $commit_history"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
