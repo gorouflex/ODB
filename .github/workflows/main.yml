@@ -38,7 +38,7 @@ jobs:
         release_tag="0.1.6-PreAlpha"
         release_title="0.1.6 Pre-Alpha"
 
-        commit_history=$(git log --oneline)
+        commit_history=$(git log)
         
         if gh release view "$release_tag" &>/dev/null; then
           gh release edit "$release_tag" --title "$release_title" --notes "The latest five updates are:  $commit_history"
