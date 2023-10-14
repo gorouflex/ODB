@@ -41,6 +41,7 @@ jobs:
 
     - name: Zip folder
       run: |
+        sudo apt-get install -y zip
         zip -r ODB.zip ODB
       working-directory: ${{ github.workspace }}
 
@@ -63,7 +64,8 @@ jobs:
         files: ODB.zip
         prerelease: true
         tag_name: ${{ steps.increment_version.outputs.new_tag }}
-        release_name: ${{ steps.increment_version.outputs.new_version }} Beta
+        release_name: "0.1.6 Alpha"
+        asset_content_type: "application/zip" # Add this line
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
