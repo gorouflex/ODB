@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main 
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -14,7 +15,8 @@ jobs:
 
     - name: Zip folder
       run: |
-      
+        sudo apt-get install -y zip
+        zip -r ODB.zip ODB
       working-directory: ${{ github.workspace }}
 
     - name: Set up Git
@@ -22,7 +24,7 @@ jobs:
         git config --global user.email "github-actions@github.com"
         git config --global user.name "GitHub Actions"
 
-    - name: Commit,push ODB.zip
+    - name: Commit and push ODB.zip
       run: |
         git add ODB.zip
         git commit -m "Add ODB.zip"
