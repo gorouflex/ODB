@@ -1,4 +1,4 @@
-name: CL
+name: Create Beta Pre-release
 
 on:
   push:
@@ -65,7 +65,6 @@ jobs:
         prerelease: true
         tag_name: ${{ steps.increment_version.outputs.new_tag }}
         release_name: "0.1.6 Alpha"
-        asset_content_type: "application/zip" # Add this line
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
