@@ -38,7 +38,7 @@ jobs:
         release_tag="0.1.6-PreAlpha"
         release_title="0.1.6 Pre-Alpha"
 
-        commit_history=$(git log -n 5 --format="%h %s %h" | awk -v ORS='\n\n' '1')
+        commit_history=$(git log -n 5 --format="%h %s (%an)" | awk -v ORS='\n\n' '1')
         commit_history="${commit_history%\n\n}"
         
         if gh release view "$release_tag" &>/dev/null; then
