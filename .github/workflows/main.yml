@@ -1,0 +1,70 @@
+name: Beta build
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v2
+
+    - name: Zip folder
+      run: |
+        # Ensure 'zip' is installed
+        sudo apt-get install -y zip
+
+        # Zip the 'ODB' folder
+        zip -r ODB.zip ODB
+      working-directory: ${{ github.workspace }}
+
+    - name: Set up Git
+      run: |
+        git config --global user.email "github-actions@github.com"
+        git config --global user.name "GitHub Actions"
+
+    - name: Commit, push Zip
+      run: |
+        git add ODB.zip
+        git commit -m "Add ODB.zip"
+        git push
+      working-directory: ${{ github.workspace }}
+
+    - name: Create pre-release build
+      id: create_release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: ODB.zip
+        prerelease: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Get 5 Most Recent Commits
+      id: get_commits
+      run: |
+        git log --oneline -n 5
+      working-directory: ${{ github.workspace }}
+
+    - name: Set Release Description
+      run: |
+        description=""
+        while read -r line; do
+          description="$description\n- $line"
+        done <<< "${{ steps.get_commits.outputs.stdout }}"
+        description="${description#\\n}"
+        echo "Recent commits in this release:${description}" > description.txt
+      working-directory: ${{ github.workspace }}
+
+    - name: Upload Release Asset
+      id: upload_asset
+      uses: actions/upload-release-asset@v1
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: description.txt
+        asset_name: recent_commits.txt
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
