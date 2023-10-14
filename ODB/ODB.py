@@ -15,7 +15,7 @@ def print_logo():
 ██║   ██║██║  ██║██╔══██╗
 ╚██████╔╝██████╔╝██████╔╝
  ╚═════╝ ╚═════╝ ╚═════╝ 
-Version 0.1.6 Alpha - CLI Mode""")
+Version 0.1.7 Alpha - CLI Mode""")
 
 def clear_screen():
     if os.name == 'nt':
