@@ -3,8 +3,7 @@ name: Beta build
 on:
   push:
     branches:
-      - main
-
+      - main 
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -15,11 +14,7 @@ jobs:
 
     - name: Zip folder
       run: |
-        # Ensure 'zip' is installed
-        sudo apt-get install -y zip
-
-        # Zip the 'ODB' folder
-        zip -r ODB.zip ODB
+      
       working-directory: ${{ github.workspace }}
 
     - name: Set up Git
@@ -27,21 +22,21 @@ jobs:
         git config --global user.email "github-actions@github.com"
         git config --global user.name "GitHub Actions"
 
-    - name: Commit, push Zip
+    - name: Commit,push ODB.zip
       run: |
         git add ODB.zip
         git commit -m "Add ODB.zip"
         git push
       working-directory: ${{ github.workspace }}
 
-    - name: Create pre-release build
+    - name: Create pre-release
       id: create_release
       uses: softprops/action-gh-release@v1
       with:
         files: ODB.zip
         prerelease: true
       env:
-        GH_PAT: ${{ secrets.GH_PAT }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Get 5 recent commits
       id: get_commits
@@ -59,7 +54,7 @@ jobs:
         echo "Recent commits in this release:${description}" > description.txt
       working-directory: ${{ github.workspace }}
 
-    - name: Upload release asset
+    - name: Upload release asset file
       id: upload_asset
       uses: actions/upload-release-asset@v1
       with:
@@ -67,4 +62,4 @@ jobs:
         asset_path: description.txt
         asset_name: recent_commits.txt
       env:
-        GH_PAT: ${{ secrets.GH_PAT }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
