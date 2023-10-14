@@ -12,7 +12,9 @@ jobs:
     steps:
     - name: Check out code
       uses: actions/checkout@v2
-
+      with:
+        ref: ${{ github.event.pull_request.head.sha }}
+           fetch-depth: 0
     - name: Set release tag and title
       id: set_release_tag_title
       run: |
@@ -38,7 +40,7 @@ jobs:
         release_tag="0.1.6-PreAlpha"
         release_title="0.1.6 Pre-Alpha"
 
-        commit_history=$(git log)
+        commit_history=$(git log -5 --oneline)
         
         if gh release view "$release_tag" &>/dev/null; then
           gh release edit "$release_tag" --title "$release_title" --notes "The latest five updates are:    $commit_history"
