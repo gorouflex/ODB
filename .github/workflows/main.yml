@@ -39,11 +39,11 @@ jobs:
         release_title="0.1.6 Pre-Alpha"
         
         if gh release view "$release_tag" &>/dev/null; then
-          commit_history=$(git log --oneline -n 5 --format="%s" | awk -v ORS='\n\n' '1')
+          commit_history=$(git log --oneline -n 5 --format="%h %s" | awk -v ORS='\n\n' '1')
           commit_history="${commit_history%\n\n}"
           gh release edit "$release_tag" --title "$release_title" --notes "Commit history:\n\n$commit_history"
         else
-          commit_history=$(git log --oneline -n 5 --format="%s" | awk -v ORS='\n\n' '1')
+          commit_history=$(git log --oneline -n 5 --format="%h %s" | awk -v ORS='\n\n' '1')
           commit_history="${commit_history%\n\n}"
           gh release create "$release_tag" ./ODB.zip --title "$release_title" --prerelease --notes "Commit history:\n\n$commit_history"
         fi
