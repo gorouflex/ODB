@@ -57,26 +57,15 @@ jobs:
         git push
       working-directory: ${{ github.workspace }}
 
-    - name: Create pre-release or overwrite
+    - name: Update or Create Release
       run: |
-       gh release create --title "0.1.6 Alpha" ${{ steps.increment_version.outputs.new_tag }} ./ODB.zip --notes-file description.txt --prerelease --replace
+        release_tag="${{ steps.increment_version.outputs.new_tag }}"
+        release_title="0.1.6 Alpha"
+
+        if gh release view "$release_tag" &>/dev/null; then
+          gh release upload "$release_tag" ./ODB.zip --notes-file description.txt --clobber
+        else
+          gh release create "$release_tag" ./ODB.zip --title "$release_title" --notes-file description.txt --prerelease
+        fi
       env:
-       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-
-
-    - name: Get 5 recent commits
-      id: get_commits
-      run: |
-        git log --oneline -n 5
-      working-directory: ${{ github.workspace }}
-
-    - name: Set release description
-      run: |
-        description=""
-        while read -r line; do
-          description="$description\n- $line"
-        done <<< "${{ steps.get_commits.outputs.stdout }}"
-        description="${description#\\n}"
-        echo "Recent commits in this release:${description}" > description.txt
-      working-directory: ${{ github.workspace }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
