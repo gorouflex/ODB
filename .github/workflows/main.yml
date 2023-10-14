@@ -57,11 +57,12 @@ jobs:
         git push
       working-directory: ${{ github.workspace }}
 
-    - name: Create pre-release
+    - name: Create pre-release or overwrite
       run: |
-        gh release create ${{ steps.increment_version.outputs.new_tag }} ./ODB.zip --title "0.1.6 Alpha" --notes-file description.txt --prerelease
+       gh release create --title "0.1.6 Alpha" ${{ steps.increment_version.outputs.new_tag }} ./ODB.zip --notes-file description.txt --prerelease --replace
       env:
        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 
 
     - name: Get 5 recent commits
