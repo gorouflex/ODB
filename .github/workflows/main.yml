@@ -61,7 +61,8 @@ jobs:
       run: |
         gh release create ${{ steps.increment_version.outputs.new_tag }} ./ODB.zip --title "0.1.6 Alpha" --notes-file description.txt --prerelease
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 
     - name: Get 5 recent commits
       id: get_commits
