@@ -42,6 +42,7 @@ jobs:
           commit_history=$(git log --oneline -n 5)
           gh release edit "$release_tag" --title "$release_title" --notes "$commit_history"
         else
+          echo '### Commit history:'
           commit_history=$(git log --oneline -n 5)
           gh release create "$release_tag" ./ODB.zip --title "$release_title" --prerelease --notes "$commit_history"
         fi
