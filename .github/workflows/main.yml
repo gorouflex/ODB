@@ -1,4 +1,4 @@
-name: Create Beta Pre-release
+name: CL
 
 on:
   push:
