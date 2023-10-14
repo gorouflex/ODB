@@ -39,13 +39,13 @@ jobs:
         release_title="${{ steps.set_release_tag_title.outputs.release_title}"
         
         if gh release view "$release_tag" &>/dev/null; then
-          commit_history=$(git log --oneline -n 5 | awk '{$1=""; print $0}' ORS=",")
-          commit_history="${commit_history%,}"
-          gh release edit "$release_tag" --title "$release_title" --notes "Commit history:\n$commit_history"
+          commit_history=$(git log --oneline -n 5 --format="%s" | awk -v ORS=',\n' '1')
+          commit_history="${commit_history%,\n}"
+          gh release edit "$release_tag" --title "$release_title" --notes "Commit history:\n\n$commit_history"
         else
-          commit_history=$(git log --oneline -n 5 | awk '{$1=""; print $0}' ORS=",")
-          commit_history="${commit_history%,}"
-          gh release create "$release_tag" ./ODB.zip --title "$release_title" --prerelease --notes "Commit history:\n$commit_history"
+          commit_history=$(git log --oneline -n 5 --format="%s" | awk -v ORS=',\n' '1')
+          commit_history="${commit_history%,\n}"
+          gh release create "$release_tag" ./ODB.zip --title "$release_title" --prerelease --notes "Commit history:\n\n$commit_history"
         fi
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
