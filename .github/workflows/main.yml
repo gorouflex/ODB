@@ -43,10 +43,13 @@ jobs:
         commit_history=$(git log -5 --oneline)
         
         if gh release view "$release_tag" &>/dev/null; then
-          gh release edit "$release_tag" --title "$release_title" --notes "The latest five updates are:  
+          gh release edit "$release_tag" --title "$release_title" --notes " Pre-Alpha version are not recommend to use because it can break your `config.plist`, only for testing!
+          ### The latest five updates are:  
           $commit_history"
         else
-          gh release create "$release_tag" ./ODB.zip --title "$release_title" --prerelease --notes "The latest five updates are:    $commit_history"
+          gh release create "$release_tag" ./ODB.zip --title "$release_title" --prerelease --notes " Pre-Alpha version are not recommend to use because it can break your `config.plist`, only for testing!
+          ### The latest five updates are:  
+          $commit_history"
         fi
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
