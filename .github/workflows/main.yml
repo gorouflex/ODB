@@ -40,14 +40,14 @@ jobs:
         release_tag="0.1.6-PreAlpha"
         release_title="0.1.6 Pre-Alpha"
 
-        commit_history=$(git log -5 --oneline)
+        commit_history=$(git log -5 --pretty=format:"%ad"--oneline --graph)
         
         if gh release view "$release_tag" &>/dev/null; then
-          gh release edit "$release_tag" --title "$release_title" --notes "### Pre-Alpha version are not recommend to use because it can break your ` config.plist `, only for testing!
+          gh release edit "$release_tag" --title "$release_title" --notes "### Pre-Alpha version are not recommend to use, only for testing!
           ### The latest commits are:  
           $commit_history"
         else
-          gh release create "$release_tag" ./ODB.zip --title "$release_title" --prerelease --notes "### Pre-Alpha version are not recommend to use because it can break your ` config.plist `, only for testing!
+          gh release create "$release_tag" ./ODB.zip --title "$release_title" --prerelease --notes "### Pre-Alpha version are not recommend to use, only for testing!
           ### The latest commits are:  
           $commit_history"
         fi
