@@ -41,7 +41,7 @@ jobs:
         commit_history=$(git log -n 5 --format="%h %s (%an)" | awk -v ORS='\n' '1')
         
         if gh release view "$release_tag" &>/dev/null; then
-          gh release edit "$release_tag" --title "$release_title" --notes "The latest five updates are:\n$commit_history"
+          gh release edit "$release_tag" --title "$release_title" --notes "The latest five updates are:.\n$commit_history"
         else
           gh release create "$release_tag" ./ODB.zip --title "$release_title" --prerelease --notes "The latest five updates are:\n$commit_history"
         fi
