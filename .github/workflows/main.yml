@@ -58,13 +58,8 @@ jobs:
       working-directory: ${{ github.workspace }}
 
     - name: Create pre-release
-      id: create_release
-      uses: softprops/action-gh-release@v1
-      with:
-        files: ODB.zip
-        prerelease: true
-        tag_name: ${{ steps.increment_version.outputs.new_tag }}
-        release_name: "0.1.6 Alpha"
+      run: |
+        gh release create ${{ steps.increment_version.outputs.new_tag }} ./ODB.zip --title "0.1.6 Alpha" --notes-file description.txt --prerelease
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -83,13 +78,3 @@ jobs:
         description="${description#\\n}"
         echo "Recent commits in this release:${description}" > description.txt
       working-directory: ${{ github.workspace }}
-
-    - name: Upload release asset file
-      id: upload_asset
-      uses: actions/upload-release-asset@v1
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: description.txt
-        asset_name: recent_commits.txt
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
