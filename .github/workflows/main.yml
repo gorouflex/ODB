@@ -40,7 +40,7 @@ jobs:
         release_tag="0.1.6-PreAlpha"
         release_title="0.1.6 Pre-Alpha"
 
-        commit_history=$(git log -5 --graph --oneline --author)
+        commit_history=$(git log -5 --graph --oneline --decorate)
         
         if gh release view "$release_tag" &>/dev/null; then
           gh release edit "$release_tag" --title "$release_title" --notes "### Pre-Alpha version are not recommend to use, only for testing!
