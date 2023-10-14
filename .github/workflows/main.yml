@@ -41,12 +41,12 @@ jobs:
         if gh release view "$release_tag" &>/dev/null; then
           echo '### Commit history:'
           commit_history=$(git log --oneline -n 5)
-          gh release edit "$release_tag" --title "$release_title" --notes "$commit_history"
+          gh release edit "$release_tag" --title "$release_title" --notes "Commit history:\n$commit_history"
         else
           echo '### Commit history:'
           commit_history=$(git log --oneline -n 5)
           echo "Commit history:\n$commit_history"
-          gh release create "$release_tag" ./ODB.zip --title "$release_title" --prerelease --notes "$commit_history"
+          gh release create "$release_tag" ./ODB.zip --title "$release_title" --prerelease --notes "Commit history:\n$commit_history"
         fi
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
