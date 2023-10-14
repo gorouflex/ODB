@@ -13,6 +13,15 @@ jobs:
     - name: Check out code
       uses: actions/checkout@v2
 
+    - name: Set release tag and title
+      id: set_release_tag_title
+      run: |
+        release_tag="0.1.6-PreAlpha"
+        release_title="0.1.6 Pre-Alpha"
+        echo "::set-output name=release_tag::$release_tag"
+        echo "::set-output name=release_title::$release_title"
+      shell: bash
+
     - name: Zip folder
       run: |
         sudo apt-get install -y zip
@@ -26,16 +35,16 @@ jobs:
 
     - name: Update release
       run: |
-        release_tag="0.1.6-PreAlpha"
-        release_title="0.1.6 Pre-Alpha"
+        release_tag="${{ steps.set_release_tag_title.outputs.release_tag }}"
+        release_title="${{ steps.set_release_tag_title.outputs.release_title}"
         
         if gh release view "$release_tag" &>/dev/null; then
           echo '### Commit history:'
-          commit_history=$(git log --oneline -n 5)
+          commit_history=$(git log --oneline -n 5 | awk '{$1=""; print $0}')
           gh release edit "$release_tag" --title "$release_title" --notes "Commit history:\n$commit_history"
         else
           echo '### Commit history:'
-          commit_history=$(git log --oneline -n 5)
+          commit_history=$(git log --oneline -n 5 | awk '{$1=""; print $0}')
           echo "Commit history:\n$commit_history"
           gh release create "$release_tag" ./ODB.zip --title "$release_title" --prerelease --notes "Commit history:\n$commit_history"
         fi
