@@ -46,7 +46,7 @@ jobs:
           gh release delete "$release_tag" --yes
         fi
 
-        gh release create "$release_tag" ./ODB.zip --title "$release_title" --prerelease --notes "### Pre-Alpha version is not recommended for use, only for testing!
+        gh release create "$release_tag" ./ODB.zip --title "$release_title" --prerelease --notes "### Pre-Alpha version is not recommended to use, only for testing purpose!
         ### The latest commits are:  
         $commit_history"
       env:
