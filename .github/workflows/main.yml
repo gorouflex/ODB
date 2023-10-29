@@ -18,8 +18,8 @@ jobs:
     - name: Set release tag and title
       id: set_release_tag_title
       run: |
-        release_tag="0.1.6-PreAlpha"
-        release_title="0.1.6 Pre-Alpha"
+        release_tag="0.1.7-PreAlpha"
+        release_title="0.1.7 Pre-Alpha"
         echo "::set-output name=release_tag::$release_tag"
         echo "::set-output name=release_title::$release_title"
       shell: bash
@@ -37,10 +37,10 @@ jobs:
 
     - name: Update release
       run: |
-        release_tag="0.1.6-PreAlpha"
-        release_title="0.1.6 Pre-Alpha"
+        release_tag="0.1.7-PreAlpha"
+        release_title="0.1.7 Pre-Alpha"
 
-        commit_history=$(git log -5 --graph --oneline --decorate)
+        commit_history=$(git log -5 --graph --oneline)
 
         if gh release view "$release_tag" &>/dev/null; then
           gh release delete "$release_tag" --yes

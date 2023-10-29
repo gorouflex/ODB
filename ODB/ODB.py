@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import os, secrets, subprocess, shlex, datetime, sys, plistlib, tempfile, shutil, random, uuid, zipfile, json, binascii
+import os, secrets, subprocess, shlex, datetime, time, sys, plistlib, tempfile, shutil, random, uuid, zipfile, json, binascii, urllib3, webbrowser
 from Scripts import *
 from collections import OrderedDict
 if sys.version_info >= (3, 0):
@@ -8,6 +8,46 @@ else:
     from urllib2 import urlopen
     
 
+def get_latest_version():
+    latest_version = urllib3.request(url="https://github.com/gorouflex/ODB/releases/latest", method="GET")
+    latest_version = latest_version.geturl()
+    return latest_version.split("/")[-1]
+
+def check_for_updates():
+    local_version = "0.1.7"
+    latest_version = get_latest_version()        
+    if local_version < latest_version:
+        print("A new update has been found!")
+        choice = input("Do you want to visit the GitHub page for more details? (Y/N)")        
+        if choice.lower() == "y":
+           webbrowser.open("https://github.com/gorouflex/ODB/releases/latest")
+           print("Exiting...")
+           clear_screen()
+           sys.exit(0)
+        else:
+           print("Exiting...")
+           time.sleep(2)
+           clear_screen()
+           sys.exit(0)
+     
+def open_github():
+    webbrowser.open("https://www.github.com/gorouflex/ODB")
+
+def open_releases():
+    webbrowser.open(f"https://github.com/gorouflex/ODB/releases/tag/{get_latest_version()}")
+
+def info():
+    clear_screen()
+    print_logo()
+    print()
+    print("About ODB")
+    print("Main developer: GorouFlex")
+    print(f"Latest version on Github: {get_latest_version()}")
+    print()
+    print("1. Open GitHub")
+    print("2. Change logs")
+    print("B. Back")
+    
 def print_logo():
     print(""" ██████╗ ██████╗ ██████╗ 
 ██╔═══██╗██╔══██╗██╔══██╗
@@ -15,7 +55,7 @@ def print_logo():
 ██║   ██║██║  ██║██╔══██╗
 ╚██████╔╝██████╔╝██████╔╝
  ╚═════╝ ╚═════╝ ╚═════╝ 
-Version 0.1.6 Alpha - CLI Mode""")
+Version 0.1.7 Alpha - CLI Mode""")
 
 def clear_screen():
     if os.name == 'nt':
@@ -74,6 +114,7 @@ class ODB:
     def print_menu(self):
         print("1. Lookup")
         print("2. Generate")
+        print("3. About")
         print("")
         print("Q. Quit")
 
@@ -90,9 +131,9 @@ class ODB:
             print_logo()
             self.print_menu()
 
-            user_choice = input("Option: ")
+            choice = input("Option: ")
 
-            if user_choice == '1':
+            if choice == '1':
                 clear_screen()
                 print_logo()
                 user_input = input("Enter the SMBIOS or SecureBootModel: ")
@@ -110,29 +151,41 @@ class ODB:
                     print(f"'{user_input}' doesn't have the T2 Chip")
                 input("Press Enter to continue...")
 
-            elif user_choice == '2':
+            elif choice == '2':
                 while True:
                     clear_screen()
                     print_logo()
                     self.print_generate_submenu()
-                    generate_choice = input("Option: ")
+                    choice = input("Option: ")
 
-                    if generate_choice == '1':
+                    if choice == '1':
                         clear_screen()
                         print_logo()                        
                         s.main()
-                    elif generate_choice == '2':
+                    elif choice == '2':
                         clear_screen()
                         print_logo()
                         print("Generated ApECID: ")
                         print(secrets.randbits(64))
                         input("Press Enter to continue...")
 
-                    elif generate_choice.lower() == 'b':
+                    elif choice.lower() == 'b':
                         break
+            elif choice == '3' :
+                while True:
+                   info()
+                   choice = input("Option: ")
+                   if choice == '1':
+                       open_github()
+                   elif choice == '2':
+                        open_releases()
+                   elif choice.lower() == 'b':
+                       break
 
-            elif user_choice.lower() == 'q':
+            elif choice.lower() == 'q':
                 print("Exiting...")
+                time.sleep(2)
+                clear_screen()
                 sys.exit(0)
 
 class Smbios:
@@ -550,5 +603,6 @@ class Smbios:
             self.gen_rom = not self.gen_rom
             
 if __name__ == "__main__":
+    check_for_updates()
     odb = ODB()
     odb.main()
