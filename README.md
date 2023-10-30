@@ -1,11 +1,4 @@
-```
-                                     ██████╗ ██████╗ ██████╗
-                                    ██╔═══██╗██╔══██╗██╔══██╗
-                                    ██║   ██║██║  ██║██████╔╝
-                                    ██║   ██║██║  ██║██╔══██╗
-                                    ╚██████╔╝██████╔╝██████╔╝
-                                     ╚═════╝ ╚═════╝ ╚═════╝                
-```
+<p align="center"><img src="Img/MainMenu.png" alt="Main Menu" title="Main Menu"></p>
 
 <h4 align="center">Apple Model Identity Lookup tool</h4>
 <h4 align="center">Support Windows and macOS</h4>
@@ -21,8 +14,6 @@
   <a href="#installation">Installation</a>
   •
   <a href="#todo">ToDo</a> 
-  •
-  <a href="#preview">Preview</a>   
 </p>
 
 # Feature
@@ -52,10 +43,9 @@ python3 [ODB.py path]
 Make sure you have Python installed and a good internet connection!
 # ToDo
 <a href="TODO.md">TODO</a> 
-# Preview
 
-<p align="center"><img src="Img/MainMenu.png" alt="Main Menu" title="Main Menu"></p>
 
-# Special thanks to:
+
+## Special thanks to:
 
 - [corpnewt](https://github.com/corpnewt) for [GenSMBios](https://github.com/corpnewt/GenSMBIOS/) source code
