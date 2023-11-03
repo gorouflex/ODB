@@ -5,4 +5,4 @@
 - ApECID, SMBios generator
 - CFU
 
-## This project is currently closed and is no longer active
+## This is the longterm project and it will get an update least every 2 weeks
