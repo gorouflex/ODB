@@ -51,8 +51,6 @@ jobs:
           gh release delete "$release_tag" --yes
         fi
 
-        gh release create "$release_tag" ./ODB.zip --title "$release_title" --prerelease --notes "### Beta version is not recommended to use, only for testing purpose!
-        ### Changelog:
-        $changelog"
+        gh release create "$release_tag" ./ODB.zip --title "$release_title" --prerelease --notes "$changelog"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
