@@ -18,8 +18,8 @@ jobs:
     - name: Set release tag and title
       id: set_release_tag_title
       run: |
-        release_tag="0.1.7-PreAlpha"
-        release_title="0.1.7 Pre-Alpha"
+        release_tag="0.1.8-Beta"
+        release_title="0.1.8 Beta"
         echo "::set-output name=release_tag::$release_tag"
         echo "::set-output name=release_title::$release_title"
       shell: bash
@@ -37,8 +37,8 @@ jobs:
 
     - name: Update release
       run: |
-        release_tag="0.1.7-PreAlpha"
-        release_title="0.1.7 Pre-Alpha"
+        release_tag="0.1.8-Beta"
+        release_title="0.1.8 Beta"
 
         commit_history=$(git log -5 --graph --oneline)
 
@@ -46,8 +46,8 @@ jobs:
           gh release delete "$release_tag" --yes
         fi
 
-        gh release create "$release_tag" ./ODB.zip --title "$release_title" --prerelease --notes "### Pre-Alpha version is not recommended to use, only for testing purpose!
-        ### The latest commits are:  
+        gh release create "$release_tag" ./ODB.zip --title "$release_title" --prerelease --notes "### Beta version is not recommended to use, only for testing purpose!
+        ### Latest commits :  
         $commit_history"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

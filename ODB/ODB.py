@@ -14,9 +14,12 @@ def get_latest_version():
     return latest_version.split("/")[-1]
 
 def check_for_updates():
-    local_version = "0.1.7"
+    local_version = "0.1.8"
     latest_version = get_latest_version()        
+
     if local_version < latest_version:
+        clear_screen()
+        print_logo()
         print("A new update has been found!")
         choice = input("Do you want to visit the GitHub page for more details? (Y/N)")        
         if choice.lower() == "y":
@@ -29,6 +32,22 @@ def check_for_updates():
            time.sleep(2)
            clear_screen()
            sys.exit(0)
+           
+    if local_version > latest_version:
+        clear_screen()
+        print_logo()
+        print()
+        print("Welcome to ODB Beta Program.")
+        print("I am not responsible if your plist is broken by using this beta version")
+        print("This is for testing purposes!")
+        choice = input("Do you want to continue? (Y/N): ")
+
+        if choice.lower() != "y":
+            print("Exiting...")
+            time.sleep(2)
+            clear_screen()
+            sys.exit(0)
+     
      
 def open_github():
     webbrowser.open("https://www.github.com/gorouflex/ODB")
@@ -41,6 +60,7 @@ def info():
     print_logo()
     print()
     print("About ODB")
+    print()
     print("Main developer: GorouFlex")
     print(f"Latest version on Github: {get_latest_version()}")
     print()
@@ -56,7 +76,8 @@ def print_logo():
 ██║   ██║██║  ██║██╔══██╗
 ╚██████╔╝██████╔╝██████╔╝
  ╚═════╝ ╚═════╝ ╚═════╝ 
-Version 0.1.7 Alpha - CLI Mode""")
+Version 0.1.8 Beta - CLI Mode""")
+    print("ODB Beta Program")
 
 def clear_screen():
     if os.name == 'nt':
@@ -115,6 +136,7 @@ class ODB:
     def print_menu(self):
         print("1. Lookup")
         print("2. Generate")
+        print()
         print("A. About")
         print("")
         print("Q. Quit")
@@ -137,6 +159,7 @@ class ODB:
             if choice == '1':
                 clear_screen()
                 print_logo()
+                print("### Hackintosh Zone (SecureBootModel Lookup)###")
                 user_input = input("Enter the SMBIOS or SecureBootModel: ")
                 if user_input in self.smbios_to_secureboot:
                     secure_boot_model = self.smbios_to_secureboot[user_input]
