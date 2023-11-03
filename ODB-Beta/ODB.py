@@ -14,7 +14,7 @@ def get_latest_version():
     return latest_version.split("/")[-1]
 
 def check_for_updates():
-    local_version = "0.1.7"
+    local_version = "0.1.8"
     latest_version = get_latest_version()        
 
     if local_version < latest_version:
@@ -76,8 +76,8 @@ def print_logo():
 ██║   ██║██║  ██║██╔══██╗
 ╚██████╔╝██████╔╝██████╔╝
  ╚═════╝ ╚═════╝ ╚═════╝ 
-Version 0.1.7 Stable - CLI Mode""")
-    #print("ODB Beta Program")
+Version 0.1.8 Beta - CLI Mode""")
+    print("ODB Beta Program")
 
 def clear_screen():
     if os.name == 'nt':
