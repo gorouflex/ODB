@@ -1,4 +1,4 @@
-name: CL
+name: Push Releases
 
 on:
   workflow_dispatch:
