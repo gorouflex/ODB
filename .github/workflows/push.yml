@@ -2,6 +2,13 @@ name: Push Releases
 
 on:
   workflow_dispatch:
+    inputs:
+      release_tag:
+        description: 'Release Tag'
+        required: true
+      release_title:
+        description: 'Release Title'
+        required: true
 
 jobs:
   build:
@@ -17,7 +24,8 @@ jobs:
     - name: Get latest release tag
       id: get_latest_release_tag
       run: |
-        echo "::set-output name=release_tag::$(gh release list --limit 1 | awk '{print $1}')"
+        echo "::set-output name=release_tag::${{ github.event.inputs.release_tag }}"
+        echo "::set-output name=release_title::${{ github.event.inputs.release_title }}"
       shell: bash
 
     - name: Zip folder
