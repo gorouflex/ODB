@@ -2,13 +2,6 @@ name: Push Releases
 
 on:
   workflow_dispatch:
-    inputs:
-      release_tag:
-        description: 'Release Tag'
-        required: true
-      release_title:
-        description: 'Release Title'
-        required: true
 
 jobs:
   build:
@@ -16,16 +9,15 @@ jobs:
 
     steps:
     - name: Check out code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         ref: ${{ github.event.pull_request.head.sha }}
         fetch-depth: 0
 
-    - name: Set release tag and title
-      id: set_release_tag_title
+    - name: Get latest release tag
+      id: get_latest_release_tag
       run: |
-        echo "::set-output name=release_tag::${{ github.event.inputs.release_tag }}"
-        echo "::set-output name=release_title::${{ github.event.inputs.release_title }}"
+        echo "::set-output name=release_tag::$(gh release list --limit 1 | awk '{print $1}')"
       shell: bash
 
     - name: Zip folder
@@ -39,11 +31,9 @@ jobs:
         git config --global user.email "github-actions@github.com"
         git config --global user.name "GitHub Actions"
 
-    - name: Update release
+    - name: Create release
       run: |
-        release_tag="${{ github.event.inputs.release_tag }}"
-        release_title="${{ github.event.inputs.release_title }}"
-
+        release_tag="${{ steps.get_latest_release_tag.outputs.release_tag }}"
         commit_history=$(git log -5 --graph --oneline)
         changelog=$(cat Changelog.md)
 
@@ -51,6 +41,6 @@ jobs:
           gh release delete "$release_tag" --yes
         fi
 
-        gh release create "$release_tag" ./ODB.zip --title "$release_title" --prerelease --notes "$changelog"
+        gh release create "$release_tag" ./ODB.zip --title "$release_tag" --notes "$changelog"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
