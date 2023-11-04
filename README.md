@@ -19,7 +19,7 @@
 # Feature
 - Gen SMBios (powered by [GenSMBios](https://github.com/corpnewt/GenSMBIOS/))
 - Gen ApECID
-- Apple Model Indentity Lookup
+- Apple Model Indentity Lookup (WIP)
 - CFU (Check For Updates)
 
 # Installation
@@ -33,7 +33,7 @@ or (in macOS)
 pip3 install -r [requirements.txt path]
 ```
 ## In Windows
- 1. Click to py file
+ 1. Click to the .py file
 ## In macOS
  1. Open Terminal
  2. Run
@@ -43,8 +43,6 @@ python3 [ODB.py path]
 Make sure you have Python installed and a good internet connection!
 # ToDo
 <a href="TODO.md">TODO</a> 
-
-
 
 ## Special thanks to:
 
