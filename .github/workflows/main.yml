@@ -19,8 +19,8 @@ jobs:
     - name: Set release tag and title
       id: set_release_tag_title
       run: |
-        echo "::set-output name=release_tag::0.1.8-Beta"
-        echo "::set-output name=release_title::0.1.8 Beta"
+        echo "::set-output name=release_tag::0.1.9-Beta"
+        echo "::set-output name=release_title::0.1.9 Beta"
       shell: bash
 
     - name: Install zip and create zip file

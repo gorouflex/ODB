@@ -12,42 +12,6 @@ def get_latest_version():
     latest_version = urllib3.request(url="https://github.com/gorouflex/ODB/releases/latest", method="GET")
     latest_version = latest_version.geturl()
     return latest_version.split("/")[-1]
-
-def check_for_updates():
-    local_version = "0.1.7"
-    latest_version = get_latest_version()        
-
-    if local_version < latest_version:
-        clear_screen()
-        print_logo()
-        print("A new update has been found!")
-        choice = input("Do you want to visit the GitHub page for more details? (Y/N)")        
-        if choice.lower() == "y":
-           webbrowser.open("https://github.com/gorouflex/ODB/releases/latest")
-           print("Exiting...")
-           clear_screen()
-           sys.exit(0)
-        else:
-           print("Exiting...")
-           time.sleep(2)
-           clear_screen()
-           sys.exit(0)
-           
-    if local_version > latest_version:
-        clear_screen()
-        print_logo()
-        print()
-        print("Welcome to ODB Beta Program.")
-        print("I am not responsible if your plist is broken by using this beta version")
-        print("This is for testing purposes!")
-        choice = input("Do you want to continue? (Y/N): ")
-
-        if choice.lower() != "y":
-            print("Exiting...")
-            time.sleep(2)
-            clear_screen()
-            sys.exit(0)
-     
      
 def open_github():
     webbrowser.open("https://www.github.com/gorouflex/ODB")
@@ -76,8 +40,7 @@ def print_logo():
 ██║   ██║██║  ██║██╔══██╗
 ╚██████╔╝██████╔╝██████╔╝
  ╚═════╝ ╚═════╝ ╚═════╝ 
-Version 0.1.7 Stable - CLI Mode""")
-    #print("ODB Beta Program")
+Version 0.1.8 Stable - CLI Mode""")
 
 def clear_screen():
     if os.name == 'nt':
@@ -146,9 +109,41 @@ class ODB:
         print("2. Generate ApECID")
         print("")
         print("B. Back to the main menu")
+
+    def check_for_updates(self):
+        local_version = "0.1.8"
+        latest_version = get_latest_version()        
+        if local_version < latest_version:
+           clear_screen()
+           print_logo()
+           print("A new update has been found!")
+           choice = input("Do you want to visit the GitHub page for more details? (Y/N)")        
+           if choice.lower() == "y":
+              webbrowser.open("https://github.com/gorouflex/ODB/releases/latest")
+              clear_screen()
+              sys.exit(0)
+           else:
+              print("Exiting...")
+              time.sleep(2)
+              clear_screen()
+              sys.exit(0)       
+        if local_version > latest_version:
+           clear_screen()
+           print_logo()
+           print()
+           print("Welcome to ODB Beta Program.")
+           print("I am not responsible if your plist is broken by using this beta version")
+           print("This is for testing purposes!")
+           choice = input("Do you want to continue? (Y/N): ")
+           if choice.lower() != "y":
+              print("Exiting...")
+              time.sleep(2)
+              clear_screen()
+              sys.exit(0)
         
     def main(self):
         s = Smbios(self)
+        self.check_for_updates()
         while True:
             clear_screen()
             print_logo()
@@ -159,7 +154,7 @@ class ODB:
             if choice == '1':
                 clear_screen()
                 print_logo()
-                print("### Hackintosh Zone (SecureBootModel Lookup)###")
+                print("### Hackintosh Zone (SecureBootModel Lookup) ###")
                 user_input = input("Enter the SMBIOS or SecureBootModel: ")
                 if user_input in self.smbios_to_secureboot:
                     secure_boot_model = self.smbios_to_secureboot[user_input]
@@ -630,6 +625,5 @@ class Smbios:
             self.gen_rom = not self.gen_rom
             
 if __name__ == "__main__":
-    check_for_updates()
     odb = ODB()
     odb.main()

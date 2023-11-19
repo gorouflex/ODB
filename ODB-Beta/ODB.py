@@ -40,7 +40,7 @@ def print_logo():
 ██║   ██║██║  ██║██╔══██╗
 ╚██████╔╝██████╔╝██████╔╝
  ╚═════╝ ╚═════╝ ╚═════╝ 
-Version 0.1.8 Beta - CLI Mode""")
+Version 0.1.9 Beta - CLI Mode""")
     print("ODB Beta Program")
 
 def clear_screen():
@@ -112,7 +112,7 @@ class ODB:
         print("B. Back to the main menu")
 
     def check_for_updates(self):
-        local_version = "0.1.8"
+        local_version = "0.1.9"
         latest_version = get_latest_version()        
         if local_version < latest_version:
            clear_screen()
@@ -155,7 +155,7 @@ class ODB:
             if choice == '1':
                 clear_screen()
                 print_logo()
-                print("### Hackintosh Zone (SecureBootModel Lookup)###")
+                print("### Hackintosh Zone (SecureBootModel Lookup) ###")
                 user_input = input("Enter the SMBIOS or SecureBootModel: ")
                 if user_input in self.smbios_to_secureboot:
                     secure_boot_model = self.smbios_to_secureboot[user_input]
