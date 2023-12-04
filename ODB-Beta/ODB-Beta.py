@@ -40,7 +40,7 @@ def print_logo():
 ██║   ██║██║  ██║██╔══██╗
 ╚██████╔╝██████╔╝██████╔╝
  ╚═════╝ ╚═════╝ ╚═════╝ 
-Version 0.1.9 Beta - CLI Mode""")
+Version 0.2.0 Beta - CLI Mode""")
     print("ODB Beta Program")
 
 def clear_screen():
@@ -109,7 +109,7 @@ class ODB:
         print("B. Back to the main menu")
 
     def check_for_updates(self):
-        local_version = "0.1.9"
+        local_version = "0.2.0"
         latest_version = get_latest_version()
         if local_version < latest_version:
             clear_screen()

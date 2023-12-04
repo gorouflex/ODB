@@ -1,4 +1,3 @@
 # Change log
 
-- Clean up
-- Change CFU logic when start
+- Refactored and optimize code

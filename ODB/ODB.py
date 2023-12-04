@@ -40,7 +40,7 @@ def print_logo():
 ██║   ██║██║  ██║██╔══██╗
 ╚██████╔╝██████╔╝██████╔╝
  ╚═════╝ ╚═════╝ ╚═════╝ 
-Version 0.1.8 Stable - CLI Mode""")
+Version 0.1.9 Stable - CLI Mode""")
 
 def clear_screen():
     _ = os.system('cls') if os.name == 'nt' else os.system('clear')
@@ -108,7 +108,7 @@ class ODB:
         print("B. Back to the main menu")
 
     def check_for_updates(self):
-        local_version = "0.1.8"
+        local_version = "0.1.9"
         latest_version = get_latest_version()
         if local_version < latest_version:
             clear_screen()
