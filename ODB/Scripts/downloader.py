@@ -35,7 +35,7 @@ class Downloader:
 
     def open_url(self, url, headers = None):
         # Fall back on the default ua if none provided
-        headers = self.ua if headers == None else headers
+        headers = self.ua if headers is None else headers
         # Wrap up the try/except block so we don't have to do this for each function
         try:
             response = urlopen(Request(url, headers=headers), context=self.ssl_context)
@@ -70,13 +70,13 @@ class Downloader:
         # Determine our rounding approach - first make sure it's an int; default to 2 on error
         try:round_to=int(round_to)
         except:round_to=2
-        round_to = 0 if round_to < 0 else 15 if round_to > 15 else round_to # Ensure it's between 0 and 15
+        round_to = 0 if round_to < 0 else min(round_to, 15)
         bval = round(s_dict[biggest], round_to)
         # Split our number based on decimal points
         a,b = str(bval).split(".")
         # Check if we need to strip or pad zeroes
         b = b.rstrip("0") if strip_zeroes else b.ljust(round_to,"0") if round_to > 0 else ""
-        return "{:,}{} {}".format(int(a),"" if not b else "."+b,biggest)
+        return "{:,}{} {}".format(int(a), "" if not b else f".{b}", biggest)
 
     def _progress_hook(self, bytes_so_far, total_size):
         if total_size > 0:
@@ -88,16 +88,15 @@ class Downloader:
             sys.stdout.write("\r\033[KDownloaded {} of {} ({:.2f}%)".format(b_s, t_s, percent))
         else:
             b_s = self.get_size(bytes_so_far)
-            sys.stdout.write("\r\033[KDownloaded {}".format(b_s))
+            sys.stdout.write(f"\r\033[KDownloaded {b_s}")
 
     def get_string(self, url, progress = True, headers = None, expand_gzip = True):
         response = self.get_bytes(url,progress,headers,expand_gzip)
-        if response == None: return None
-        return self._decode(response)
+        return None if response is None else self._decode(response)
 
     def get_bytes(self, url, progress = True, headers = None, expand_gzip = True):
         response = self.open_url(url, headers)
-        if response == None: return None
+        if response is None: return None
         bytes_so_far = 0
         try: total_size = int(response.headers['Content-Length'])
         except: total_size = -1
@@ -117,7 +116,7 @@ class Downloader:
 
     def stream_to_file(self, url, file_path, progress = True, headers = None):
         response = self.open_url(url, headers)
-        if response == None: return None
+        if response is None: return None
         bytes_so_far = 0
         try: total_size = int(response.headers['Content-Length'])
         except: total_size = -1
