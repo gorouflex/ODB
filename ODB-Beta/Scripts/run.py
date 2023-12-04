@@ -90,7 +90,7 @@ class Run:
             p = subprocess.Popen(comm, shell=shell, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             c = p.communicate()
         except:
-            if c == None:
+            if c is None:
                 return ("", "Command not found!", 1)
         return (self._decode(c[0]), self._decode(c[1]), p.returncode)
 
@@ -109,8 +109,8 @@ class Run:
             stderr = comm.get("stderr", False)
             mess   = comm.get("message", None)
             show   = comm.get("show",   False)
-            
-            if not mess == None:
+
+            if mess is not None:
                 print(mess)
 
             if not len(args):
@@ -125,7 +125,7 @@ class Run:
                         args.insert(0, out[0].replace("\n", "")) # add to start of list
                     elif type(args) is str:
                         args = out[0].replace("\n", "") + " " + args # add to start of string
-            
+
             if show:
                 print(" ".join(args))
 
@@ -145,7 +145,4 @@ class Run:
             if leave_on_fail and out[2] != 0:
                 # Got an error - leave
                 break
-        if len(output_list) == 1:
-            # We only ran one command - just return that output
-            return output_list[0]
-        return output_list
+        return output_list[0] if len(output_list) == 1 else output_list
