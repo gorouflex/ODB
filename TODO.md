@@ -5,4 +5,4 @@
 - ApECID, SMBios generator
 - CFU
 
-## This is the longterm project and it will get an update least every 2 weeks
+# ⚠️ Starting from 29/12/2023, this repo will be out of support by GFx and never active again! ⚠️
