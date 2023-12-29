@@ -16,6 +16,7 @@
   <a href="#todo">ToDo</a> 
 </p>
 
+# ⚠️ Starting from 29/12/2023, this repo will be out of support by GFx and never active again! ⚠️
 # Feature
 - Gen SMBios (powered by [GenSMBios](https://github.com/corpnewt/GenSMBIOS/))
 - Gen ApECID
